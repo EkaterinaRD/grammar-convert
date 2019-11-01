@@ -13,7 +13,7 @@ java -classpath ./out Main
 ```
 результат будет выведен в файл "words.txt"
 
-1.TM -> UD Рыбина Екатерина
+2.TM -> UD Рыбина Екатерина
 --------------------------------
 #### сборка из папки GrammarsTM
 ```html
@@ -25,3 +25,9 @@ javac -sourcepath ./src -d out src/MainClass.java
 java -classpath ./out MainClass
 ```
 результат будет выведен в файл "words.txt"
+
+-------------
+##### скачать репозитория
+```html
+git clone https://github.com/EkaterinaRD/grammar-convert.git
+```
