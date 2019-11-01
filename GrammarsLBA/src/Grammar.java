@@ -17,8 +17,6 @@ public abstract class Grammar {
 
         @Override
         public boolean equals(Object obj){
-            //if (getClass() != obj.getClass())
-                //return false;
             return (name.equals(((GrammarElement)obj).name));
         }
 
@@ -145,7 +143,7 @@ public abstract class Grammar {
             this.usedCombinatios = new LinkedList<>();
             this.countOfWords = countOfWords;
         }
-        // Ищем все правила, у которых правая часть - стартовый нетерминал.
+
         private void startGenerate(){
             for(Rule rule : rules){
                 if((rule.left.size() == 1) && (rule.left.get(0).equals(start))){
@@ -156,56 +154,42 @@ public abstract class Grammar {
 
         private void generate(Rule rule){
 
-            // очередь списков элментов, которые нужно разобрать
             Queue<List<GrammarElement>> queue = new LinkedList<>();
 
-            // добавляем в очередь разбора правые части правил
             queue.offer(rule.right);
 
             while((stringsForWriting.size() < countOfWords) && (queue.size() > 0)){
-                // получаем список для разбора
 
                 List<GrammarElement> list = queue.poll();
 
-                // если список состоит из терминалов, создем из него строку и добавляем ее в список для печати
                 if(allSymbolsTerminal(list)){
                     createString(list);
                 }
 
-                // ищем правила, у которых левая часть содержится в list
                 for(Rule r : rules){
                     int startInd = 0;
                     int ind = 0;
-                    // ищем правила, у которых левая часть содержится в list
                     while(startInd < list.size() - r.left.size() + 1) {
                         ind = containsList(r.left, list, startInd);
 
-                        // найдено правило, у которого левая часть содержится в list (начиная с индекса ind)
-                        // добаляем в очередь новый элемент. Он будет состоять из символов list, которые
-                        // стоят до вхождения левой части + правой части найденного правила + символов,
-                        // стоящих после левой части
                         if (ind > -1) {
                             List<GrammarElement> newList = new ArrayList<>();
 
-                            // символы, стоящие до вхождения левой части
                             for (int i = 0; i < ind; i++)
                             {
                                 newList.add(list.get(i));
                             }
 
-                            // правая часть
                             for (int i = 0; i < r.right.size(); i++)
                             {
                                 newList.add(r.right.get(i));
                             }
 
-                            // символы, стоящие после вхождения левой части
                             for (int i = ind + r.left.size(); i < list.size(); i++)
                             {
                                 newList.add(list.get(i));
                             }
 
-                            // если такую комбинацию еще не рассматирвали, то добавим ее в очередь
                             if((newList.size() < maxLength)&&(!useCombination(newList))){
                                 queue.offer(newList);
                             }
@@ -221,7 +205,6 @@ public abstract class Grammar {
 
         }
 
-        //сравниваем список list1 с куском (начиная c ind) списка list2
         private boolean compareListsOfSymbols(List<GrammarElement> list1, List<GrammarElement> list2, int ind){
             for(int i = 0; i < list1.size(); i++){
                 if(!list1.get(i).equals(list2.get(ind + i))){
@@ -231,7 +214,6 @@ public abstract class Grammar {
             return true;
         }
 
-        // ищем вхождение list1 в list2 начиная с индекса indStart
         private int containsList(List<GrammarElement> list1, List<GrammarElement> list2, int startInd){
             for(int i = startInd; i < list2.size() - list1.size() + 1; i++){
                 if(compareListsOfSymbols(list1, list2, i)){
@@ -241,7 +223,6 @@ public abstract class Grammar {
             return -1;
         }
 
-        //прверяем, что все символы в списке терминальные
         private boolean allSymbolsTerminal(List<GrammarElement> list){
             for(GrammarElement value : list){
                 if(!terminals.contains(value)){
